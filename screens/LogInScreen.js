@@ -11,25 +11,25 @@ import api from '../config/api';
 
 function LogInScreen({navigation}) {
 
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
     const login = async () => {
         try {
-            const response = await fetch( api.api_link +'/authentication/authenticate',
+            const response = await fetch('http://192.168.1.8:8080/authentification/authentifier',
                 {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "username": username,
+                    "email": email,
                     "password" : password
                 })
             });
             const json = await response.json();
-            // navigation.replace('HomeScreen');
             if ("token" in json){
+                console.log("token in json");
                 navigation.reset({
                     index: 0,
                     routes: [{name: 'HomeScreen'}],
@@ -57,9 +57,9 @@ function LogInScreen({navigation}) {
 
                 <KeyboardAvoidingView style={styles.form} behavior={'position'}>
 
-                    <Input style={styles.inputSpacing} icon={images.authentication.user} auto="username" placeholder="Username" function={setUsername} autoCorrect={false} autoCapitalize='none'/>
+                    <Input style={styles.inputSpacing} icon={images.authentication.user} auto="email" placeholder="Email" function={setEmail} autoCorrect={false} autoCapitalize="none" textContentType="alban2@gmail.com"/>
 
-                    <Input style={styles.inputSpacing} icon={images.authentication.password} secure={true} auto="password" placeholder="Password" function={setPassword} autoCorrect={false} autoCapitalize='none'/>
+                    <Input style={styles.inputSpacing} icon={images.authentication.password} secure={true} auto="password" placeholder="Password" function={setPassword} autoCorrect={false} autoCapitalize='none' textContentType="Mdp12345678"/>
 
                     <BigButton style={styles.buttonSpacing} text="Log In" function={()=> {login()}} />
                 

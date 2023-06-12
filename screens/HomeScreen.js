@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {StyleSheet, Text,Image,SafeAreaView,ImageBackground, ScrollView, View,Dimensions } from 'react-native'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+// garder le bottom navigator pour les sondages
 import colors from '../config/colors';
 import fonts from '../config/fonts';
 import images from '../config/images';
@@ -12,8 +12,6 @@ var height = Dimensions.get('window').height;
 
 
 function HomeScreen({navigation}) {
-
-    const Tab = createBottomTabNavigator();
 
     return (
         <ImageBackground 
@@ -39,14 +37,7 @@ function HomeScreen({navigation}) {
 
                 </ScrollView> 
 
-                <NavigationContainer>
-                    <Tab.Navigator>
-                        <Tab.Screen name="Home" component={HomeScreen} />
-                    </Tab.Navigator>
-                </NavigationContainer>
             </SafeAreaView>
-
-            
 
         </ImageBackground>
     );
