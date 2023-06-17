@@ -5,7 +5,8 @@ const mode = Appearance.getColorScheme();
 const images = {
     universal:{
         whiteLogo:require("../assets/images/allegro.png"),
-        backArrow:require("../assets/images/back.png")
+        backArrow:require("../assets/images/back.png"),
+        logout:require("../assets/images/logout.png")
     },
     authentication: {
         background: mode === 'light' ? require("../assets/images/authentication/background-light.png") : require("../assets/images/authentication/background-dark.png"),

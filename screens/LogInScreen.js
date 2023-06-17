@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text,Image,SafeAreaView,Alert,ImageBackground,KeyboardAvoidingView } from 'react-native'; 
 import BigButton from '../components/BigButton';
 import Input from '../components/Input';
@@ -7,41 +7,21 @@ import colors from '../config/colors';
 import fonts from '../config/fonts';
 import images from '../config/images';
 import api from '../config/api';
+import { saveToken } from '../service/TokenManager.js';
+import login from '../service/Login.js';
 
 
 function LogInScreen({navigation}) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const login = async () => {
-        try {
-            const response = await fetch('http://192.168.1.8:8080/authentification/authentifier',
-                {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "email": email,
-                    "password" : password
-                })
-            });
-            const json = await response.json();
-            if ("token" in json){
-                console.log("token in json");
-                navigation.reset({
-                    index: 0,
-                    routes: [{name: 'HomeScreen'}],
-                });
-            }else{
-                Alert.alert("Authentication error",json["error"])
-            }
-            // Alert.alert("Login","Success")
-        } catch (error) {
+    
+    const handleLogin = () => {
+        login(email, password, navigation)
+          .catch((error) => {
             console.error(error);
-        }
-    };
+          });
+      };
 
     return (
         <ImageBackground 
@@ -61,7 +41,7 @@ function LogInScreen({navigation}) {
 
                     <Input style={styles.inputSpacing} icon={images.authentication.password} secure={true} auto="password" placeholder="Password" function={setPassword} autoCorrect={false} autoCapitalize='none' textContentType="Mdp12345678"/>
 
-                    <BigButton style={styles.buttonSpacing} text="Log In" function={()=> {login()}} />
+                    <BigButton style={styles.buttonSpacing} text="Log In" function={handleLogin} />
                 
                 </KeyboardAvoidingView>
 
