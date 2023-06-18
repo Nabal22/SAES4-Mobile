@@ -7,11 +7,11 @@ import LogInScreen from '../screens/LogInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import AccountChoiceScreen from '../screens/AccountChoiceScreen';
 import HomeScreen from '../screens/HomeScreen';
-import SondageScreen from '../screens/SondageScreen';
+import SondageNavigator from './SondageNavigator';
 
 const Stack = createNativeStackNavigator();
 
-function AuthNavigation(props) {
+const MainNavigator = (props) => {
 
     useEffect(() => {
         retrieveToken('userToken').then((token) => {
@@ -23,14 +23,14 @@ function AuthNavigation(props) {
     }, []);
 
     return (
-        <Stack.Navigator initialRouteName='' screenOptions={{headerShown: false}}>
+        <Stack.Navigator initialRouteName='' screenOptions={{headerShown: false, }}>
             <Stack.Screen name = "SignUpScreen" component={SignUpScreen}/>
             <Stack.Screen name = "AccountChoiceScreen" component={AccountChoiceScreen}/>
             <Stack.Screen name = "LogInScreen" component={LogInScreen}/>
             <Stack.Screen name = "HomeScreen" component={HomeScreen}/>
-            <Stack.Screen name = "SondageScreen" component={SondageScreen}/>
+            <Stack.Screen name = "SondageNavigator" component={SondageNavigator} />
         </Stack.Navigator>
     );
 }
 
-export default AuthNavigation;
+export default MainNavigator;

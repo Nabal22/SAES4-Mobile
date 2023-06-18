@@ -1,13 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import AuthNavigation from './navigation/AuthNavigation';
+import MainNavigator from './navigation/MainNavigator';
 import { NavigationContainer, useNavigationContainerRef} from '@react-navigation/native';
+import colors from './config/colors';
 
 export default function App() {
   const navigationRef = useNavigationContainerRef();
   return (
-    <NavigationContainer ref={navigationRef}>
-      <AuthNavigation navigation={navigationRef}/>
+    <NavigationContainer ref={navigationRef} theme={{colors: {background: colors.primary}}}>
+      <MainNavigator navigation={navigationRef}/>
     </NavigationContainer>
   );
 }
@@ -15,7 +16,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
