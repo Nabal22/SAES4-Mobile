@@ -1,7 +1,7 @@
 // SondageSurvey.jssondages
-import React, {useState, useEffect} from 'react';
+import React, {useState, useContext} from 'react';
 import {StyleSheet, SafeAreaView,ImageBackground, ScrollView, View, Dimensions , Text} from 'react-native';
-import { retrieveToken } from '../../service/TokenManager.js';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
 // garder le bottom navigator pour les sondages
 import colors from '../../config/colors';
@@ -9,13 +9,13 @@ import fonts from '../../config/fonts';
 import images from '../../config/images.js';
 import Header from '../../components/Header.js';
 
-import api from '../../config/api.js';
 const width = Dimensions.get('window').width;
-const height = Dimensions.get('window').height; 
 
-function SondageSurveyScreen({ route }) {
-    const { id, nom, nbQuestion, navigation } = route.params;
-    
+function SondageSurveyScreen() {
+    const navigation = useNavigation();
+    const route = useRoute();
+    const { id, nom, nbQuestion, questions } = route.params;
+  
   return (
     <ImageBackground 
     source={images.authentication.background}  
@@ -32,8 +32,12 @@ function SondageSurveyScreen({ route }) {
             <View style={styles.postContainer}>
                 <Text style={styles.title}>{nom}</Text>
                 <Text style={styles.title}>{nbQuestion}</Text>
-
             </View>
+
+            <View >
+            </View>
+                        
+
         </ScrollView>
 
     </SafeAreaView>

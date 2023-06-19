@@ -1,23 +1,53 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ImageBackground, StyleSheet, Dimensions } from 'react-native';
+import {  StyleSheet, Dimensions, ActivityIndicator } from 'react-native';
+import { retrieveToken } from '../service/TokenManager';
 
 import colors from '../config/colors';
-import images from '../config/images';
+import api from '../config/api';
+
 import SondageSurveyScreen from '../screens/Sondage/SondageSurveyScreen';
 import SondageResultScreen from '../screens/Sondage/SondageResultScreen';
 import { useRoute } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
-const { width, height } = Dimensions.get('window');
 
 const SondageNavigator = ({navigation}) => {
   const route = useRoute();
   const { id, nom, nbQuestion, aRepondu } = route.params;
 
+  const [questions, setQuestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    let url = api.api_link+'/api/sondage/get-question-of-sondage/' + id;
+    retrieveToken('userToken').then((token) => {
+      setIsLoading(true); // Définir isLoading sur true avant la requête API
+      fetch(url, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        setQuestions(data);
+      })
+      .catch(error => console.error(error))
+      .finally(() => {
+        setIsLoading(false); // Définir isLoading sur false une fois que les questions sont chargées
+      });
+    });
+  }, []);
+  
+  if (isLoading) {
+    // Afficher un indicateur de chargement ou un écran de chargement
+    return <ActivityIndicator />;
+  }
+
   return (
-    
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
@@ -51,11 +81,11 @@ const SondageNavigator = ({navigation}) => {
                 size={26}
               />
             ),
-            tabBarLabel: 'Survey',
+            tabBarLabel: 'Répondre',
             tabBarLabelStyle: styles.tabBarLabelStyle,
             tabBarIconStyle: styles.tabBarIconStyle,
           }}
-          initialParams={{ id: id, nom: nom, nbQuestion: nbQuestion, aRepondu: aRepondu, navigation: navigation }}
+          initialParams={{ id: id, nom: nom, nbQuestion: nbQuestion, aRepondu: aRepondu, navigation: navigation , questions: questions}}
 
         />
         <Tab.Screen
@@ -69,11 +99,11 @@ const SondageNavigator = ({navigation}) => {
                 size={26}
               />
             ),
-            tabBarLabel: 'Result',
+            tabBarLabel: 'Resultats',
             tabBarLabelStyle: styles.tabBarLabelStyle,
             tabBarIconStyle: styles.tabBarIconStyle,
           }}
-          initialParams={{ id: id, nom: nom, nbQuestion: nbQuestion, aRepondu: aRepondu, navigation: navigation }}
+          initialParams={{ id: id, nom: nom, nbQuestion: nbQuestion, aRepondu: aRepondu, navigation: navigation , questions: questions}}
         />
       </Tab.Navigator>
   );
