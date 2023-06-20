@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, SafeAreaView, ImageBackground, ScrollView, View, Dimensions, Text, Button, ActivityIndicator, FlatList} from 'react-native';
+import { StyleSheet, SafeAreaView, ImageBackground, View, Dimensions, Text, ActivityIndicator, FlatList, Pressable} from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { retrieveToken } from '../../service/TokenManager';
-
-import MultiSelect from 'react-native-multiple-select';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 
 import QuestionComponent from '../../components/QuestionComponent.js';
 
@@ -18,8 +17,9 @@ const width = Dimensions.get('window').width;
 function SondageSurveyScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { id, nom, nbQuestion, questions } = route.params;
+  const { id, nom, nbQuestion, questions, aRepondu } = route.params;
   const [loading, setLoading] = useState(true); // Ajout de l'état loading
+  const [isSending, setIsSending] = useState(false); // Ajout de l'état isSending
 
   let tmpRepData = {};
   questions.map((question) => {
@@ -60,54 +60,156 @@ function SondageSurveyScreen() {
         setReponses(tmp);
     };
 
-  const submitSurvey = () => {
-    // convert value of reponses to string
-    for (const [key, value] of Object.entries(reponses)) {
-        let tmp = [];
-        value.forEach((element) => {
-            tmp.push(element.toString());
-        });
-        reponses[key] = tmp;
-    }
+    const checkIfQuesionIsAnswered = (question, reponse) => {  
+      return reponse.length >= question.nbReponseMin && reponse.length <= question.nbReponseMax;
+    };
 
-    const submitJson = {
-        "idSondage": id,
-        "reponses": reponses
+    const checkIfAllQuestionsAreAnswered = () => {
+      let isAnswered = true;
+      let contenuNotAnswered = null;
+      // check reponses is defined
+      questions.forEach((question) => {
+        if (reponses[question.id] === undefined) {
+          return { isAnswered: false, contenuNotAnswered: null };
+        }
+        if (!checkIfQuesionIsAnswered(question, reponses[question.id])) {
+          isAnswered = false;
+          contenuNotAnswered = question.contenu;
+        }
+      });
+      return { isAnswered, contenuNotAnswered };
+    };
+
+  const submitSurvey = () => {
+    setIsSending(true);
+    // check if all questions are answered
+    const { isAnswered, contenuNotAnswered } = checkIfAllQuestionsAreAnswered();
+    if (!isAnswered) {
+      alert(`Vous n'avez pas répondu à la question suivante : ${contenuNotAnswered}`);
+      setIsSending(false);
     }
-    console.log(submitJson);
+    else {
+      // convert value of reponses to string
+      for (const [key, value] of Object.entries(reponses)) {
+          let tmp = [];
+          value.forEach((element) => {
+              tmp.push(element.toString());
+          });
+          reponses[key] = tmp;
+      }
+
+      const submitJson = {
+          "idSondage": id,
+          "reponses": reponses
+      };
+
+      // fetch response to /api/sondage/repondre
+      retrieveToken('userToken').then((token) => {
+        fetch(api.api_link + '/api/sondage/repondre', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(submitJson)
+        })
+        .then((response) => {
+          if (response.status === 200) {
+            // Aucune réponse de la part de l'API, l'envoie a fonctionné
+            setIsSending(false);
+            navigation.navigate('SondageResultScreen', { id, nom, nbQuestion, questions, aRepondu: true });
+          } else {
+            return response.json();
+          }
+        })
+        .then((json) => {
+          if (json && json.error) {
+            alert(json.error);
+          }
+        })
+        .catch((error) => {
+          console.log('error:', error);
+        });
+      });
+      
+    }
   }
+
+  // Button submit
+  const questionsWithButton = [...questions, { id: 'button', type: 'BUTTON' }];
+  const [isPressed, setIsPressed] = useState(false);
+
+  const handlePressIn = () => {
+    setIsPressed(true);
+  };
+
+  const handlePressOut = () => {
+    setIsPressed(false);
+  };
+
+  const handlePress = () => {
+    submitSurvey();
+  };
 
     return (
         <ImageBackground source={images.authentication.background} resizeMode="cover" style={styles.imageContainer}>
           <SafeAreaView style={styles.container}>
-            <Header title={'Réponde au sondage'} style={styles.header} navigation={navigation} />
+            <Header title={nom} style={styles.header} navigation={navigation} />
     
             <View style={styles.postContainer}>
-                <Text style={styles.title}>{nom}</Text>
-    
-                {loading ? ( // Afficher l'indicateur de chargement si loading est true
-                  <ActivityIndicator size="large" color={colors.secondary} />
-                ) : (
-                  <FlatList
-                    data={questions}
-                    renderItem={({ item }) => (
-                        
-                      <QuestionComponent
-                        key={item.id}
-                        question={item}
-                        reponsePossible={reponsePossible[item.id]}
-                        onSelectedItemsChange={onSelectedItemsChange}
-                      />
-                    )}
-                    keyExtractor={(item) => item.id}
-                    style={styles.scrollView}
-                  />
-                )}
-    
-                <Button
-                  title="Valider"
-                  onPress={() => submitSurvey()}
+
+              {aRepondu ? ( // Si aRepondu est true, afficher le texte d'information
+                <View style={styles.alreadyAnsweredContainer}>
+                  <Text style={styles.alreadyAnsweredText}>Vous avez déjà répondu à ce sondage.</Text>
+                  <MaterialCommunityIcons name="check" size={24} color={colors.quaternary} />
+                </View>
+              ) : loading ? ( // Sinon, afficher l'indicateur de chargement si loading est true
+                <ActivityIndicator size="large" color={colors.secondary} />
+              ) : (
+                <FlatList
+                  data={questionsWithButton}
+                  renderItem={({ item }) => {
+                    if (item.type === 'BUTTON') {
+                      return (
+                        <View style={styles.SubmitButtonContainer}>
+                          <Pressable
+                            onPressIn={handlePressIn}
+                            onPressOut={handlePressOut}
+                            onPress={handlePress}
+                            style={[
+                              styles.SubmitButton,
+                              isPressed && styles.SubmitButtonPressed,
+                            ]}
+                            color={colors.quaternary}
+                          >
+                            <Text style={styles.SubmitButtonText}>Envoyer</Text>
+
+                            {isSending ? (
+                              <ActivityIndicator size="small" color={colors.secondary} />
+                            ) : (
+                              <MaterialCommunityIcons name="send" size={24} color={colors.secondary} />
+                            )}
+
+                          </Pressable>
+                        </View>
+                        );
+                    } else {
+                      return (
+                        <QuestionComponent
+                          key={item.id}
+                          question={item}
+                          reponsePossible={reponsePossible[item.id]}
+                          onSelectedItemsChange={onSelectedItemsChange}
+                          style={styles.questionContainer}
+                        />
+                      );
+                    }
+                  }}
+                  keyExtractor={(item) => item.id}
+                  style={styles.scrollView}
                 />
+              )}
+    
             </View>
           </SafeAreaView>
         </ImageBackground>
@@ -124,16 +226,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.primary,
-  },
-  title: {
-    padding: 5,
-    margin: 10,
-    marginBottom: 15,
-    fontSize: 25,
-    fontWeight: 'bold',
-    color: colors.secondary,
-    fontFamily: fonts.main,
   },
   postContainer: {
     width: width,
@@ -143,17 +235,75 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'column',
+    margin: 10,
+    padding: 10,
   },
   scrollView: {
     width: width,
     flex: 1,
   },
-  multiSelectContainer: {
-
-  },
   multiSelectStyle: {
     width: width,
     flex: 1,
+  },
+  
+  SubmitButtonContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width,
+    padding: 10,
+    margin: 5,
+  },
+  SubmitButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 10,
+    backgroundColor: colors.quaternary,
+    borderRadius: 15,
+    elevation: 5,
+    shadowColor: 'rgba(0, 0, 0, 0.8)',
+    shadowOffset: {
+        width: 5,
+        height: 5,
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    },
+  },
+  SubmitButtonPressed: {
+    backgroundColor: colors.quaternary_pressed,
+  },
+  SubmitButtonText: {
+    paddingRight: 10,
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.secondary,
+    fontFamily: fonts.main,
+  },
+  alreadyAnsweredContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    margin: 20,
+    backgroundColor: colors.tertiary,
+    borderRadius: 15,
+    elevation: 5,
+    shadowColor: 'rgba(0, 0, 0, 0.8)',
+    shadowOffset: {
+        width: 5,
+        height: 5,
+    shadowOpacity: 0.8,
+    shadowRadius: 4,
+    },
+  },
+  alreadyAnsweredText: {
+    margin: 10,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.secondary,
+    fontFamily: fonts.main,
   },
 
 });

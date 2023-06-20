@@ -84,9 +84,9 @@ const SondageNavigator = ({navigation}) => {
             tabBarLabel: 'Répondre',
             tabBarLabelStyle: styles.tabBarLabelStyle,
             tabBarIconStyle: styles.tabBarIconStyle,
+            tabBarAccessibilityLabel: aRepondu ? '' : 'Répondre', // Masquer le libellé de l'onglet si aRepondu est vrai
           }}
           initialParams={{ id: id, nom: nom, nbQuestion: nbQuestion, aRepondu: aRepondu, navigation: navigation , questions: questions}}
-
         />
         <Tab.Screen
           name="SondageResultScreen"
