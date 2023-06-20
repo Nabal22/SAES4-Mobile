@@ -4,7 +4,7 @@ const mode = Appearance.getColorScheme();
 
 const images = {
     universal:{
-        whiteLogo:require("../assets/images/allegro.png"),
+        logo:require("../assets/images/CASBT_logo.png"),
         backArrow:require("../assets/images/back.png"),
         logout:require("../assets/images/logout.png")
     },
@@ -14,13 +14,9 @@ const images = {
         user: require("../assets/images/authentication/user.png"),
         email: require("../assets/images/authentication/envelope.png"),
         password: require("../assets/images/authentication/lock.png"),
-        accountChoice:{
-            standard:require("../assets/images/authentication/listen.png"),
-            artist:require("../assets/images/authentication/singer.png"),
-            label:require("../assets/images/authentication/record-label.png"),
-            venue:require("../assets/images/authentication/concert.png")
-        }
+        date:require("../assets/images/authentication/calendar-days.png"),
+        localisation:require("../assets/images/authentication/marker.png")
     }
 };
     
-    export default images;
+export default images;
