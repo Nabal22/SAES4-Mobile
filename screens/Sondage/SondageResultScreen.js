@@ -19,7 +19,7 @@ const width = Dimensions.get('window').width;
 function SondageResultScreen() {
   const navigation = useNavigation();
   const route = useRoute();
-  const { id, nom, nbQuestion,  questions } = route.params;
+  const { id, nom, nbQuestion,  questions, aRepondu } = route.params;
   const [repData, setRepData] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +50,7 @@ function SondageResultScreen() {
         });
     });
 
-  }, [questions]);
+  }, [questions, aRepondu]);
 
   function renderCharts() {
     return (

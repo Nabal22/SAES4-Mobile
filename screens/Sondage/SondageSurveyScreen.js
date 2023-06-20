@@ -3,6 +3,8 @@ import { StyleSheet, SafeAreaView, ImageBackground, View, Dimensions, Text, Acti
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { retrieveToken } from '../../service/TokenManager';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import {use } from '@react-navigation/native-stack';
+
 
 import QuestionComponent from '../../components/QuestionComponent.js';
 
@@ -18,9 +20,10 @@ function SondageSurveyScreen() {
   const navigation = useNavigation();
   const route = useRoute();
   const { id, nom, nbQuestion, questions, aRepondu } = route.params;
+  const [aReponduState, setAReponduState] = useState(aRepondu);
+
   const [loading, setLoading] = useState(true); // Ajout de l'état loading
   const [isSending, setIsSending] = useState(false); // Ajout de l'état isSending
-
   let tmpRepData = {};
   questions.map((question) => {
     tmpRepData[question.id] = [];
@@ -117,6 +120,7 @@ function SondageSurveyScreen() {
           if (response.status === 200) {
             // Aucune réponse de la part de l'API, l'envoie a fonctionné
             setIsSending(false);
+            setAReponduState(true);
             navigation.navigate('SondageResultScreen', { id, nom, nbQuestion, questions, aRepondu: true });
           } else {
             return response.json();
@@ -158,7 +162,7 @@ function SondageSurveyScreen() {
     
             <View style={styles.postContainer}>
 
-              {aRepondu ? ( // Si aRepondu est true, afficher le texte d'information
+              {aReponduState ? ( // Si aRepondu est true, afficher le texte d'information
                 <View style={styles.alreadyAnsweredContainer}>
                   <Text style={styles.alreadyAnsweredText}>Vous avez déjà répondu à ce sondage.</Text>
                   <MaterialCommunityIcons name="check" size={24} color={colors.quaternary} />
