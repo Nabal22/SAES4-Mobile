@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, SafeAreaView,ImageBackground, ScrollView, View,Dimensions } from 'react-native';
+import {StyleSheet, SafeAreaView,ImageBackground, ScrollView, View,Dimensions, ActivityIndicator } from 'react-native';
 import { retrieveToken } from '../service/TokenManager.js';
+import { useFocusEffect, useRoute } from '@react-navigation/native';
 
 // garder le bottom navigator pour les sondages
 import colors from '../config/colors';
@@ -13,12 +14,18 @@ import api from '../config/api.js';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height; 
 
-function HomeScreen({navigation}) {
+function HomeScreen({ navigation }) {
+    const route = useRoute();
+    const params = route.params;
+    
     const [sondageList, setSondageList] = useState([]);
-
-    useEffect(() => {
-        const url = api.api_link+'/api/sondage/get-all';
-        retrieveToken('userToken').then((token) => {
+    const [isLoading, setIsLoading] = useState(true);
+  
+    const fetchSondageList = () => {
+        setIsLoading(true);
+        const url = api.api_link + '/api/sondage/get-all';
+        retrieveToken('userToken')
+        .then((token) => {
             fetch(url, {
             method: 'GET',
             headers: {
@@ -27,48 +34,61 @@ function HomeScreen({navigation}) {
             }
             })
             .then(response => response.json())
-            .then(data =>
-                setSondageList(data))
+            .then(data => {
+                setSondageList(data);
+                setIsLoading(false);
+            })
             .catch(error => console.error(error));
         })
-        .catch((error) => { console.error(error); });
+        .catch((error) => {
+            console.error(error);
+        });
+    };
+  
+    useEffect(() => {
+      fetchSondageList();
     }, []);
 
-    return (
-        <ImageBackground 
-            source={images.authentication.background}  
-            resizeMode="cover" style={styles.imageContainer}>
-                
-
-            <SafeAreaView style={styles.container}>  
-                <Header title={'Vos Sondages'}  style={styles.header} navigation={navigation}  />
-
-                <ScrollView style={styles.scrollView}>
-
-                    <View style={styles.postContainer}>
-
-                    {sondageList.map((sondage) => (
-                        <SondagePressable 
-                        key={sondage.id}
-                        id={sondage.id} 
-                        nom={sondage.nom} 
-                        aRepondu={sondage.aRepondu} 
-                        nbQuestion={sondage.nbQuestion} 
-                        navigation={navigation}
-                        />
-                    ))}
-
-
-                    </View>
-
-                </ScrollView> 
-
-            </SafeAreaView>
-
-        </ImageBackground>
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchSondageList();
+        }, [])
     );
-}
-
+  
+    return (
+      <ImageBackground
+        source={images.authentication.background}
+        resizeMode="cover"
+        style={styles.imageContainer}
+      >
+        <SafeAreaView style={styles.container}>
+          <Header title={'Vos Sondages'} style={styles.header} navigation={navigation} />
+  
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.postContainer}>
+              {isLoading ? (
+                <ActivityIndicator /> // Affichez un indicateur de chargement pendant que les données sont récupérées.
+              ) : (
+                sondageList.map((sondage) => (
+                  <SondagePressable
+                    key={sondage.id}
+                    id={sondage.id}
+                    nom={sondage.nom}
+                    aRepondu={sondage.aRepondu}
+                    nbQuestion={sondage.nbQuestion}
+                    navigation={navigation}
+                  />
+                ))
+              )}
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </ImageBackground>
+    );
+  }
+  
+  // Le reste du code reste inchangé
+  
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',

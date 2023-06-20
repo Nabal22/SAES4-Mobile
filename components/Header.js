@@ -1,9 +1,9 @@
 import React, {useState} from "react";
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import { deleteToken } from "../service/TokenManager";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import colors from "../config/colors";
 import fonts from "../config/fonts";
-import images from "../config/images";
 
 function Header(props) {
     const [isPressed, setIsPressed] = useState(false);
@@ -30,10 +30,7 @@ function Header(props) {
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
             >
-                <Image source={images.universal.logout}
-                style={{ width: 20, height: 20 }}
-                resizeMode="contain"
-                />
+                <MaterialCommunityIcons name="logout" size={24} color={colors.tertiary} />
             </Pressable>
         </View>
     );
@@ -53,7 +50,7 @@ function logout(navigation){
 const styles = StyleSheet.create({
     header: {
         width: "100%",
-        height: 100,
+        height: 70,
         alignItems: "center",
         justifyContent: "center",
         flexDirection: "row",

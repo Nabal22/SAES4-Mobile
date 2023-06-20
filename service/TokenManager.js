@@ -13,7 +13,7 @@ export const retrieveToken = async (key) => {
   try {
     const token = await AsyncStorage.getItem(key);
     if (token) {
-      console.log('Token récupéré :', token);
+      // console.log('Token récupéré :', token);
       return token;
     } else {
       console.log('Aucun token trouvé');

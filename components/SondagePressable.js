@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Pressable, StyleSheet, Text, Alert } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import colors from '../config/colors';
 import fonts from '../config/fonts';
 
@@ -65,9 +66,13 @@ function SondagePressable(props) {
         onPressOut={handleIconPressOut}
       >
         {props.aRepondu ? (
-          <Text style={styles.button_icon}>✅</Text>
+          <MaterialCommunityIcons
+            name="check"
+            size={24}
+            color={colors.tertiary_pressed}
+          />
         ) : (
-          <Text style={styles.button_icon}>❓</Text>
+          <MaterialCommunityIcons name="progress-question" size={24} color={colors.tertiary} />
         )}
       </Pressable>
       

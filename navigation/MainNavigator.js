@@ -23,7 +23,7 @@ const MainNavigator = (props) => {
     }, []);
 
     return (
-        <Stack.Navigator initialRouteName='' screenOptions={{headerShown: false, }}>
+        <Stack.Navigator initialRouteName='LogInScreen' screenOptions={{headerShown: false, }}>
             <Stack.Screen name = "SignUpScreen" component={SignUpScreen}/>
             <Stack.Screen name = "AccountChoiceScreen" component={AccountChoiceScreen}/>
             <Stack.Screen name = "LogInScreen" component={LogInScreen}/>
