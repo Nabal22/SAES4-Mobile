@@ -83,20 +83,24 @@ function SondagePressable(props) {
 const styles = StyleSheet.create({
   button: {
     width: 300,
-    minHeight: 100,
+    minHeight: 120,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
     backgroundColor: colors.tertiary,
-    padding: 20,
+    padding: 0,
     margin: 10,
     position: 'relative',
   },
   button_title: {
+    textAlign : 'center',
     fontSize: 22,
     fontFamily: fonts.main,
     color: colors.secondary,
     fontWeight: 'bold',
+    width: 180, // ou toute autre largeur souhaitée
+    paddingHorizontal: 5, // pour ajouter un peu d'espace intérieur horizontal
+    overflow: 'hidden', // pour masquer le texte dépassant de la largeur spécifiée
   },
   button_text: {
     color: colors.secondary,

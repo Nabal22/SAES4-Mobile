@@ -56,6 +56,7 @@ const SondageNavigator = ({ navigation }) => {
         tabBarStyle: {
           borderTopColor: 'transparent',
           margin: 20,
+          marginTop : 5,
           backgroundColor: colors.tertiary,
           borderRadius: 15,
           elevation: 5,

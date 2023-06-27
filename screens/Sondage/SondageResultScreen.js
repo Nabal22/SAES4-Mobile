@@ -70,8 +70,8 @@ function SondageResultScreen() {
                 <ScrollView style={styles.labelsContainer}>
                 {data.map((value, labelIndex) => (
                     <View key={labelIndex} style={styles.label}>
-                    <View style={[styles.labelColor, { backgroundColor: getRandomColor(labelIndex) }]} />
-                    <Text style={styles.labelText}>{Object.keys(repData[key])[labelIndex]}</Text>
+                    <View style={[styles.labelColor, { backgroundColor: getRandomColor(labelIndex) }]} /> 
+                    <Text style={[styles.labelText, styles.labelText2]}>{Object.keys(repData[key])[labelIndex]}</Text>
                     <View style={styles.labelTextContainer}>
                         <Text style={styles.labelText}>{value}</Text>
                         <MaterialCommunityIcons name="account" size={16} color={colors.secondary} />
@@ -129,6 +129,7 @@ const styles = StyleSheet.create({
   },
   chartContainer: {
     width: '100%',
+    height : 250,
     alignItems: 'center',
     justifyContent: 'center',
     margin: 10,
@@ -178,6 +179,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.main,
   },
   labelsContainer: {
+    maxHeight : 150,
     margin: 10,
     backgroundColor: colors.quaternary,
     borderRadius: 15,
@@ -191,7 +193,6 @@ const styles = StyleSheet.create({
   labelColor: {
     width: 10,
     height: 10,
-    marginRight: 5,
   },
     labelTextContainer: {
     flexDirection: 'row',
@@ -200,10 +201,12 @@ const styles = StyleSheet.create({
     flex: 1,
     },
   labelText: {
+    padding : 5,
+    overflow : 'hidden',
     fontSize: 12,
     color: colors.secondary,
     fontFamily: fonts.main,
-    textAlign: 'right',
+    textAlign: 'left',
   },
   labelValue: {
     fontSize: 16,
@@ -212,6 +215,10 @@ const styles = StyleSheet.create({
     fontFamily: fonts.main,
     textAlign: 'right',
     },
+    labelText2: {
+      maxWidth : 70,
+      overflow : 'hidden',
+    }
   
 });
 

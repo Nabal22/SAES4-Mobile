@@ -88,6 +88,8 @@ function QuestionComponent(props) {
             tagRemoveIconColor={colors.tertiary}
             tagBorderColor={colors.tertiary_pressed}
             tagTextColor={colors.tertiary_pressed}
+            tagContainerStyle={styles.tagStyle}
+            
             selectedItemTextColor={colors.quaternary_pressed}
             selectedItemIconColor={colors.quaternary_pressed}
             itemTextColor={colors.secondary}
@@ -100,13 +102,14 @@ function QuestionComponent(props) {
             single={question.type === 'CHECKBOX'}
             multiple={question.type === 'LIST'}
 
-            styleTextDropdown = {styles.test}
-            styleDropdownMenuSubsection = {styles.test}
             styleTextDropdownSelected = {styles.test}
-            styleSelectorContainer = {styles.test}
+            styleTextDropdown = {styles.test}
             styleDropdownMenu = {styles.test}
-            styleItemsContainer = {styles.test}
-            styleListContainer = {styles.test}
+            styleDropdownMenuSubsection = {styles.test}
+
+            styleSelectorContainer = {styles.dropdownSelectorContainer}
+            styleItemsContainer = {styles.dropdownSelectorContainer}
+            styleListContainer = {styles.dropdownSelectorContainer}
           />
         )}
         </View>
@@ -134,6 +137,7 @@ const styles = StyleSheet.create({
     },
   },
   questionHeader: {
+    position : 'relative',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -141,14 +145,17 @@ const styles = StyleSheet.create({
   questionBody: {
     marginTop: 10,
   },
-
   title: {
-    fontSize: 22,
+    maxWidth : 280,
+    fontSize: 20,
     fontWeight: 'bold',
     color: colors.secondary,
     fontFamily: fonts.main,
   },
   icon_container: {
+    position : 'absolute',
+    top : 0,
+    right : 0,
     width: 40,
     height: 40,
     justifyContent: 'center',
@@ -188,9 +195,23 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 10,
     padding: 10,
+    maxHeight : 270,
   },
   test : {
     backgroundColor: colors.quaternary,
+  },
+  styleTextDropdownSelected: {
+    maxWidth: 200, // ou toute autre largeur souhaitée
+    overflow: 'hidden', // pour masquer le texte dépassant de la largeur spécifiée
+    backgroundColor: colors.quaternary,
+  },
+  tagStyle : {
+    maxWidth: 280, // ou toute autre largeur souhaitée
+  },
+  dropdownSelectorContainer : {
+    backgroundColor: colors.quaternary,
+    overflow : 'scroll',
+    maxHeight : 200,
   }
 });
 

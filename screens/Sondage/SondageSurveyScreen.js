@@ -88,8 +88,8 @@ function SondageSurveyScreen() {
     // check if all questions are answered
     const { isAnswered, contenuNotAnswered } = checkIfAllQuestionsAreAnswered();
     if (!isAnswered) {
-      alert(`Vous n'avez pas répondu à la question suivante : ${contenuNotAnswered}`);
       setIsSending(false);
+      alert(`Vous n'avez pas répondu à la question suivante : ${contenuNotAnswered}`);
     }
     else {
       // convert value of reponses to string
@@ -128,6 +128,7 @@ function SondageSurveyScreen() {
         })
         .then((json) => {
           if (json && json.error) {
+            setIsSending(false);
             alert(json.error);
           }
         })
@@ -140,7 +141,6 @@ function SondageSurveyScreen() {
   }
 
   // Button submit
-  const questionsWithButton = [...questions, { id: 'button', type: 'BUTTON' }];
   const [isPressed, setIsPressed] = useState(false);
 
   const handlePressIn = () => {
@@ -171,33 +171,8 @@ function SondageSurveyScreen() {
                 <ActivityIndicator size="large" color={colors.secondary} />
               ) : (
                 <FlatList
-                  data={questionsWithButton}
+                  data={questions}
                   renderItem={({ item }) => {
-                    if (item.type === 'BUTTON') {
-                      return (
-                        <View style={styles.SubmitButtonContainer}>
-                          <Pressable
-                            onPressIn={handlePressIn}
-                            onPressOut={handlePressOut}
-                            onPress={handlePress}
-                            style={[
-                              styles.SubmitButton,
-                              isPressed && styles.SubmitButtonPressed,
-                            ]}
-                            color={colors.quaternary}
-                          >
-                            <Text style={styles.SubmitButtonText}>Envoyer</Text>
-
-                            {isSending ? (
-                              <ActivityIndicator size="small" color={colors.secondary} />
-                            ) : (
-                              <MaterialCommunityIcons name="send" size={24} color={colors.secondary} />
-                            )}
-
-                          </Pressable>
-                        </View>
-                        );
-                    } else {
                       return (
                         <QuestionComponent
                           key={item.id}
@@ -207,13 +182,33 @@ function SondageSurveyScreen() {
                           style={styles.questionContainer}
                         />
                       );
-                    }
-                  }}
+                    }}
                   keyExtractor={(item) => item.id}
                   style={styles.scrollView}
                 />
               )}
-    
+            {!aReponduState && ( // Ajoutez cette condition pour ne rendre le bouton que lorsque aReponduState est false
+              <View style={styles.SubmitButtonContainer2}>
+                <Pressable
+                  onPressIn={handlePressIn}
+                  onPressOut={handlePressOut}
+                  onPress={handlePress}
+                  style={[
+                    styles.SubmitButton,
+                    isPressed && styles.SubmitButtonPressed,
+                  ]}
+                  color={colors.quaternary}
+                >
+                  <Text style={styles.SubmitButtonText}>Envoyer</Text>
+
+                  {isSending ? (
+                    <ActivityIndicator size="small" color={colors.secondary} />
+                  ) : (
+                    <MaterialCommunityIcons name="send" size={24} color={colors.secondary} />
+                  )}
+                </Pressable>
+              </View>
+            )}
             </View>
           </SafeAreaView>
         </ImageBackground>
@@ -258,6 +253,15 @@ const styles = StyleSheet.create({
     width: width,
     padding: 10,
     margin: 5,
+  },
+  SubmitButtonContainer2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: width,
+    padding: 5,
+    margin: 5,
+    marginBottom : -20,
   },
   SubmitButton: {
     flexDirection: 'row',
@@ -309,7 +313,9 @@ const styles = StyleSheet.create({
     color: colors.secondary,
     fontFamily: fonts.main,
   },
-
+  questionContainer :{
+    maxHeight : 400,
+  }
 });
 
 export default SondageSurveyScreen;
