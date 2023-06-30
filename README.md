@@ -20,8 +20,8 @@ L'application utilise une API pour récupérer les données des sondages. Avant 
 
 ## Installation
 
-1. Clonez ce dépôt : `git clone https://github.com/votre-utilisateur/votre-projet.git`.
-2. Accédez au répertoire du projet : `cd votre-projet`.
+1. Clonez ce dépôt : `git clone https://github.com/Nabal22/SAES4-Mobile.git`.
+2. Accédez au répertoire du projet : `cd SAES4-Mobile`.
 3. Installez les dépendances : `npm install`.
 4. Après avoir installer Expo sur votre appareil, lancez l'application : `npx expo start`.
 
