@@ -1,4 +1,4 @@
-# Mobile Polling Application
+# Mobile Polling Application - IUT Project
 
 This project was carried out as part of a SAé during the fourth semester of the Professional Bachelor's Degree in Technology (BUT). The mobile polling application allows users to participate in polls and submit their responses.
 
