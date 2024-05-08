@@ -1,32 +1,28 @@
-# Application mobile de sondages
+# Mobile Polling Application
 
-Ce projet a été réalisé dans le cadre d'une SAé au cours du quatrième semestre de la Licence professionnelle BUT. L'application mobile de sondages permet aux utilisateurs de participer à des sondages et de soumettre leurs réponses.
+This project was carried out as part of a SAé during the fourth semester of the Professional Bachelor's Degree in Technology (BUT). The mobile polling application allows users to participate in polls and submit their responses.
 
-## Configuration de l'API
+## API Configuration
 
-L'application utilise une API pour récupérer les données des sondages. Avant de lancer l'application, assurez-vous de démarrer l'API en local en suivant les étapes appropriées. Vous devez également configurer l'URL de l'API dans l'application. Voici comment procéder :
+The application utilizes an API to retrieve poll data. Before launching the application, ensure to start the API locally by following the appropriate steps. You must also configure the API URL within the application. Here's how to proceed:
 
-1. Ouvrez le fichier `config/api.js` de l'application.
-2. Trouvez la variable `api_link`.
-3. Remplacez la valeur de `api_link` par l'URL de votre réseau local est assuré vous que votre téléphone y est également connecté
+1.Open the config/api.js file in the application.
+2.Find the api_link variable.
+3.Replace the value of api_link with the URL of your local network and ensure your phone is connected to it as well.
 
-## Fonctionnalités
+## Features
 
-- Affichage des sondages disponibles à partir de l'API.
-- Affichage des questions et des options de réponse pour chaque sondage.
-- Soumission des réponses des utilisateurs aux sondages.
-- Gestion des utilisateurs et authentification pour accéder aux sondages.
-- Interface utilisateur réactive et conviviale.
+- Display of available polls from the API.
+- Display of questions and response options for each poll.
+- Submission of user responses to polls.
+- User management and authentication to access polls.
+- Responsive and user-friendly interface.
 
 ## Installation
 
-1. Clonez ce dépôt : `git clone https://github.com/Nabal22/SAES4-Mobile.git`.
-2. Accédez au répertoire du projet : `cd SAES4-Mobile`.
-3. Installez les dépendances : `npm install`.
-4. Après avoir installer Expo sur votre appareil, lancez l'application : `npx expo start`.
+1.Clone this repository: git clone https://github.com/Nabal22/SAES4-Mobile.git.
+2.Navigate to the project directory: cd SAES4-Mobile.
+3.Install dependencies: npm install.
+4.After installing Expo on your device, launch the application: npx expo start.
 
-Assurez-vous d'avoir démarré l'API en local avant de lancer l'application.
-
-## Contribuer
-
-Les contributions à ce projet sont les bienvenues. Vous pouvez ouvrir une issue pour signaler des problèmes ou proposer des améliorations. Vous pouvez également soumettre des pull requests pour contribuer au développement de l'application.
+Ensure that you have started the API locally before launching the application.
